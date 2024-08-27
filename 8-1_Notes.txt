@@ -1,0 +1,285 @@
+Intro to CyberSec
+====================================================================================================================================
+
+////////////////////////////////////////////// CYBER DEFENSE INTRODUCTION FINISHED \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	
+====================================================================================================================================
+
+Threat and Vuln Management
+	Nessus
+		Task 1 - Intro
+		Task 2 - Install
+			• Had to register for a code, nothing abnormal
+			• Gave me a good reason to get my VMs working again, I typically do Ubuntu but I chose Kali for the distro this time
+			• Registered with the code in my email and setup an acct with a long randomly generated passphrase
+			• Server starts as a service and then connected back with https://localhost:8834 (or kali instead of localhost)
+		Task 3 - Navigation and Scans
+		Task 4 - Scanning!
+		Task 5 - Scanning a Web Application
+
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+	MITRE
+		Task 1 - 
+			• ATT&CK® (Adversarial Tactics, Techniques, and Common Knowledge) Framework
+			• CAR (Cyber Analytics Repository) Knowledge Base
+			• ENGAGE (sorry, not a fancy acronym)
+			• D3FEND (Detection, Denial, and Disruption Framework Empowering Network Defense)
+			• AEP (ATT&CK Emulation Plans)
+		Task 2 - 
+			• TTP:
+				Tactic		Adversaries goal/objective
+				Technique	how they achieve it
+				Procedure	how it's executed
+		Task 3 - ATT&CK
+			• Globally accessible knowledge base of adversary tactics & techniques
+			• Used to be windows only, expanded to MacOS and Linux (No UNIX? Just UNIX-like systems?)
+		Task 4 - CAR
+			• A good way to find ways to detect TTPs listed in the ATT&CK framework, essentially improving threat detection
+			• Has a browser plugin for searching quickly and conviently
+		Task 5 - ENGAGE
+			• The logical next step, MITRE ENGAGE is geared towards engaging adversaries:
+				○ Cyber Denial - Preventing adversaries from continuing to exploit
+				○ Cyber Deception - Planting red herrings for the adversary
+		Task 6 - D3FEND
+			• Detection, Denial and Disruption Framework Empowering Network DEFENSE
+			• Essentially this is a resource of cybersecurity countermeasures
+		Task 7 - AEP
+			• ATT&CK Emulation Plans
+				○ Public libary of adversary emulation plans contributed from CTID
+			• CTID - Center of Threat-Informed Defense
+				○ This is meant to research cyber threats (like APTs) and their TTPs to benefit all. Vendors include:
+					- AttackIQ
+					- Verizon
+					- Microsoft
+					- Red Canary
+					- Splunk
+		Task 8 - ATT&CK and Threat Intelligence
+			• Info and TTPs attributed to adversaries to ascertain best defensive strategies
+
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+	Yara (Yet Another Ridiculous Acronym)
+		Task 1 - Intro
+			• Virustotal had a part in this!
+		Task 2 - What is Yara?
+			• A pattern-matching program
+			• Can search for example the string Hello World! from print("Hello World!") across the system, like a MUCH more robust find
+		Task 3 - Deploy
+		Task 4 - Introduction to Yara Rules
+			• Every rule must have a name and condition on creation
+				○ yara <name> <dir>
+		Task 5 - Expanding on Yara Rules
+			• Some conditions:
+				○ Desc			Description of the rule from the author
+				○ Meta			Part of the file that doesn't influence the rule at all, good for the Desc
+				○ Strings		As it says on the tin, strings to search for
+				○ Conditions	Your typical conditions, can be used with operators
+		Task 6 - Yara Modules
+			• Works with Python PE, Cuckoo Sandbox and a few others
+		Task 7 - Other tools and Yara
+			• LOKI (open source indicator of compromise scanner)
+			• THOR (Also IOC scanner, multi-platform)
+			• FENRIR (bash script IOC scanner, fixed issues from THOR/LOKI)
+			• YAYA (repository manager)
+		Task 8 - Using LOKI and its Yara rule set
+			• Basically I'm given a suspicious file from a coworker, I use Loki to detect whether it's malicious or not
+			• I run a scan and see it gets picked up as a web shell, matching the rule strl
+			• Scanning the second file shows that it's benign
+		Task 9 - Creating Yara rules with yarGen
+			• Now it's time to create a rule specifically to detect the web shell that has been identified in the other files
+			• yarGen is a generator for Yara rules
+				○ It essentially will find isolated strings in a file you feed it that aren't found in any goodware, essentially creating detection rule for that specific malware
+					+ --excludegood
+		Task 10 - Valhalla
+			• Also created by Florian, along with almost every other Yara tool that's been covered
+			• Basically a repository/feed of Yara rules that are searchable by a handful of useful params
+		Task 11 - Conclusion
+
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+	Zero Logon
+		Task 1 - The Zero Day Angle
+			• Leverages flaw in MS-NRPC (Microsoft NetLogon Remote Protocol) cryptography to get the ciphertext
+		Task 2 - Impacket Installation
+			• This is installed and utilized via Python Virtual Environs
+		Task 3 - The Proof of Concept
+			• This task is a lengthy write-up of a PoC for a ZeroLogon python script, wayyyy too lengthy to include in brief notes summary, link is here for reference
+				○ https://tryhackme.com/r/room/zer0logon -- Task 3.
+			• Exploiting it is one thing, but now we need a way to exploit the machine further
+				○ This is done by changing the password of a user over RDP, for this it'll be a null password but that won't always be the case
+					- This is done via inserting a handful of lines of code that were deduced via reading microsoft docs for this exact (legit) situation (NetrServerPasswordSet2)
+		Task 4 - Lab It Up!
+			• Command to reset machine back to original state:
+				- powershell.exe -c 'Reset-ComputerMachinePassword'
+			• Command to pass the local admin hash with evil-winrm
+				- evil-winrm -u Administrator -H <Local Admin Hash> -i <ip>
+
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+	OpenVAS
+		Task 1 - Intro
+			• OpenVAS is an endpoint and wepapp vuln scanner
+		Task 2 - GVM Framework Architecture
+			• OpenVAS is built off of GreenBone Vulnerability Management
+		Task 3 - Installing OpenVAS
+			• Can be run from Docker! Also avail in Kali respositories but can be a pain
+		Task 4 - Initial Config
+			• Test installation with a localhost scan
+			• There's a setup wizard going over a quick setup
+		Task 5 - Scanning Infrastructure
+			• Create a new task with the blue '★' button
+				○ While creating a new task, new scan targets can also be selected with the ★ icon next to the field
+		Task 6 - Reporting and Continuous Monitoring
+			• For this task we're given a report to analyze
+			• We're also going over continuous monitoring (schedules, basically cronjobs/task scheduler)
+				○ Do this by Config > Schedules, create the schedule and THEN assign task/scans to it.
+			• There's also alerts (Config > Alerts) which is configured very similarly to the schedules, but with an 'alerts' field for new vuln detections, scan status, etc
+		Task 7 - Practical Vulnerability Management
+
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+	MISP
+		Task 1 - Overview
+			• Malware Information Sharing Platform
+		Task 2 - MISP Intro: Features and Terminologies
+			• Open-source threat information platform that collects, stores and distributes IOCs to a community of trusted members
+				○ Their communities are split between closed, semi-private and open communities depending on trust level
+			• Threat info can be piped into a NIDS or SIEM
+			• Uses:
+				○ Malware Reverse Engineering
+				○ Security Investigations
+				○ Intelligence Analysis
+				○ Law Enforcement
+				○ Risk Analysis
+				○ Fraud Analysis
+			• Functionalities:
+				○ IOC Database
+				○ Automatic Correlation
+				○ Data Sharing
+				○ Import & Export Features
+				○ Event Graph
+				○ API
+			• Useful terms:
+				○ Events		- Collection of contextually linked info
+				○ Attributes	- Data points related to an event
+				○ Objects		- Custom attribute compositions
+				○ Object Ref	- Relationships between objects
+				○ Sightings		- Time-specific occurrences of data point/attributes
+				○ Tags			- Labels for events/attributes
+				○ Taxonomies	- Classification libraries are used to tag, classify and organize information
+				○ Galaxies		- Knowledge base items used to label events/attributes
+				○ Indictors		- Pieces of information that can detect suspicious or malicious cyber activity
+		Task 3 - Using the System
+			• Here I get hands onto a MISP instance, getting acquainted with the dashboard
+			• Event Creation - On a basic level events are a bunch of information pertaining to an incident/investigation, these can be shared locally with your org, or to varying levels of public.
+			• I can add attributes and attachments to events, this can help wtih IDS detections and allow others to see reports and analyze files
+		Task 4 - Feeds & Taxonomies
+			• Feeds are almost like CVEs, they're distributed out to people in the communities so they can be aware of threats, analyze threats and correlate threats
+			• Taxonomies in MISP are much like the classes under the same name relating to animals
+				○ Listed under the Event Actions tab
+			• Tags also work much like we're all familiar with from youtube, social media and the likes
+		Task 5 - Scenario Event
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+
+====================================================================================================================================
+
+//////////////////////////////////////////// PLACEHOLDERRRRRRRRRRRRRRRRRRRRRRRRRRRRRR \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	
+====================================================================================================================================
+	
+
+		Task 1 - 
+			• 
+		Task 2 - 
+			• 
+		Task 3 - 
+			• 
+		Task 4 - 
+			• 
+		Task 5 - 
+			• 
+		Task 6 - 
+			• 
+		Task 7 - 
+			• 
+		Task 8 - 
+			• 
+		Task 9 - 
+			• 
+		Task 10 - 
+			• 
+		Task 11 - 
+			• 
+		Task 12 - 
+			• 
+		Task 13 - 
+			• 
+		Task 14 - 
+			• 
+		Task 15 - 
+			• 
+		Task 16 - 
+			• 
+		Task 17 - 
+			• 
+		Task 18 - 
+			• 
+		Task 19 - 
+			• 
+		Task 20 - 
+			• 
+		Task 21 - 
+			• 
+		Task 22 - 
+			• 
+		Task 23 - 
+			• 
